@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+</head>
+<body>
+    <header>
+        <h1>School Task Portal</h1>
+        <nav>
+            <ul>
+                <li><a href="Homepage.html">Home</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    <hr>
+
+<main>
+        <h2>Create an Account</h2>
+        <form action="login.html" method="GET">
+            
+            <fieldset>
+                <legend><strong>Account Information</strong></legend>
+                
+                <div>
+                    <label for="username">Username:</label><br>
+                    <input type="text" id="username" name="username" placeholder="e.g., hozayfa_ashraf" required autofocus>
+                </div>
+                <br>
+                
+                <div>
+                    <label for="email">Email Address:</label><br>
+                    <input type="email" id="email" name="email" placeholder="hoz@gmail.com" required>
+                </div>
+                <br>
+                
+                <div>
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" placeholder="Minimum 8 characters" minlength="8" required>
+                </div>
+                <br>
+                
+                <div>
+                    <label for="confirm_password">Confirm Password:</label><br>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" minlength="8" required>
+                </div>
+            </fieldset>
+            
+            <br>
+            
+            <fieldset>
+                <legend><strong>Role Selection</strong></legend>
+                <p>Please select your role in the system:</p>
+                
+                <div>
+                    <input type="radio" id="role_admin" name="is_admin" value="True" required>
+                    <label for="role_admin">School Admin</label>
+                </div>
+                <div>
+                    <input type="radio" id="role_teacher" name="is_admin" value="False" required>
+                    <label for="role_teacher">Teacher</label>
+                </div>
+            </fieldset>
+            
+            <br>
+            
+            <div>
+                <button type="submit">Complete Sign Up</button>
+                <button type="reset">Clear Form</button> 
+            </div>
+        </form>
+    </main>
+    <hr>
+
+    <footer>
+        <p><small>Already have an account? <a href="login.html">Log in here</a>.</small></p>
+    </footer>
+</body>
+</html>
