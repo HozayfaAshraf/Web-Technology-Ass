@@ -1,0 +1,304 @@
+ADD TASK :::
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Tasks</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1><a href="AdminDashboard.html">School Task Portal</a></h1>
+        <nav>
+            <ul>
+                <li><a href="Profile.html">Profile</a></li>
+                <li><a href="AdminDashboard.html">Dashboard</a></li>
+                <li><a href="Homepage.html">Log out</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <hr>
+
+    <main>
+        <section class="form-container">
+            <h2>Create a New Task</h2>
+            <p>Fill out the details below to assign a new task to a teacher.</p>
+
+            <form action="AdminDashboard.html" method="GET">
+                <fieldset>
+                    <legend>Task Details</legend>
+
+                    <div>
+                        <label for="taskId">Task ID:</label><br>
+                        <input type="number" id="taskId" name="taskId" placeholder="e.g., 101" required>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="taskTitle">Task Title:</label><br>
+                        <input type="text" id="taskTitle" name="taskTitle" placeholder="Enter task title" required>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="teacherName">Assign to Teacher:</label><br>
+                        <select id="teacherName" name="teacherName" required>
+                            <option value="" disabled selected>Select a Teacher...</option>
+                            <option value="mr_smith">Mr. Smith</option>
+                            <option value="mrs_davis">Mrs. Davis</option>
+                            <option value="ms_johnson">Ms. Johnson</option>
+                        </select>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="priority">Priority Level:</label><br>
+                        <select id="priority" name="priority" required>
+                            <option value="" disabled selected>Select Priority...</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="description">Task Description:</label><br>
+                        <textarea id="description" name="description" rows="5" cols="40" placeholder="Provide task instructions here..." required></textarea>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="createdBy">Created By (Admin):</label><br>
+                        <input type="text" id="createdBy" name="createdBy" value="CurrentAdminUser" readonly>
+                    </div>
+                    <br>
+                </fieldset>
+                <br>
+                
+                <div class="form-actions">
+                    <button type="submit">Submit Task</button>
+                    <button type="reset">Clear Form</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <hr>
+
+    <footer>
+        <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
+    </footer>
+
+</body>
+
+</html>
+
+
+COMPLETED TASKS ::::
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completed Tasks</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1><a href="TeacherDashboard.html">School Task Portal</a></h1>
+        <nav>
+            <ul>
+                <li><a href="Profile.html">Profile</a></li>
+                <li><a href="TeacherDashboard.html">Dashboard</a></li>
+                <li><a href="Homepage.html">Log out</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <hr>
+
+    <main>
+        <section class="table-container">
+            <h2>My Completed Tasks</h2>
+            <p>Below is the history of all the tasks you have successfully finished.</p>
+
+            <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; text-align: left;">
+                <caption>List of Completed Tasks</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Task ID</th>
+                        <th scope="col">Task Title</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Assigned By</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>101</td>
+                        <td>Grade Midterm Exams</td>
+                        <td>High</td>
+                        <td>Admin_Sarah</td>
+                        <td>Completed</td>
+                        <td><a href="ViewTask.html">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td>105</td>
+                        <td>Update Attendance Sheets</td>
+                        <td>Medium</td>
+                        <td>Admin_John</td>
+                        <td>Completed</td>
+                        <td><a href="ViewTask.html">View Details</a></td>
+                    </tr>
+                    <tr>
+                        <td>112</td>
+                        <td>Prepare Science Fair Material</td>
+                        <td>Low</td>
+                        <td>Admin_Sarah</td>
+                        <td>Completed</td>
+                        <td><a href="ViewTask.html">View Details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <br>
+            <div class="page-actions">
+                <a href="TeacherDashboard.html"><button type="button">Back to Dashboard</button></a>
+            </div>
+        </section>
+    </main>
+
+    <hr>
+
+    <footer>
+        <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
+    </footer>
+
+</body>
+
+</html>
+
+
+
+EDIT TASKS :::::
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1><a href="AdminDashboard.html">School Task Portal</a></h1>
+        <nav>
+            <ul>
+                <li><a href="Profile.html">Profile</a></li>
+                <li><a href="AdminDashboard.html">Dashboard</a></li>
+                <li><a href="Homepage.html">Log out</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <hr>
+
+    <main>
+        <section class="form-container">
+            <h2>Edit Task Details</h2>
+            <p>Update the information below to modify the assigned task.</p>
+
+            <form action="AdminDashboard.html" method="GET">
+                <fieldset>
+                    <legend>Modify Task</legend>
+
+                    <div>
+                        <label for="taskId">Task ID:</label><br>
+                        <input type="number" id="taskId" name="taskId" value="101" readonly>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="taskTitle">Task Title:</label><br>
+                        <input type="text" id="taskTitle" name="taskTitle" value="Grade Midterm Exams" required>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="teacherName">Assigned Teacher:</label><br>
+                        <select id="teacherName" name="teacherName" required>
+                            <option value="mr_smith" selected>Mr. Smith</option>
+                            <option value="mrs_davis">Mrs. Davis</option>
+                            <option value="ms_johnson">Ms. Johnson</option>
+                        </select>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="priority">Priority Level:</label><br>
+                        <select id="priority" name="priority" required>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high" selected>High</option>
+                        </select>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="description">Task Description:</label><br>
+                        <textarea id="description" name="description" rows="5" cols="40" required>Please finish grading the grade 10 science midterms by Friday.</textarea>
+                    </div>
+                    <br>
+
+                    <div>
+                        <label for="createdBy">Created By (Admin):</label><br>
+                        <input type="text" id="createdBy" name="createdBy" value="CurrentAdminUser" readonly>
+                    </div>
+                    <br>
+                </fieldset>
+                <br>
+                
+                <div class="form-actions">
+                    <button type="submit">Save Changes</button>
+                    <a href="AdminDashboard.html"><button type="button">Cancel</button></a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <hr>
+
+    <footer>
+        <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
+    </footer>
+
+</body>
+
+</html>
