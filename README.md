@@ -14,11 +14,12 @@ Finished Pages:
 - AdminDashboard
 - TeacherDashboard
 
-Not Finished Pages:
-
+IN progress (sobky)
 - AddTask
 - CompletedTasks
 - EditTask
+
+Not Finished Pages:
 - PasswordReset
 - Profile
 - ViewTask
