@@ -78,7 +78,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if(localStorage.getItem('Username') === username && localStorage.getItem('Password') === password) {
+            if(localStorage.getItem('username') === username && localStorage.getItem('password') === password) {
 
                 if(localStorage.getItem('role') === "admin") {
                     window.location.href = 'AdminDashboard.html';

@@ -105,9 +105,9 @@
         let role = document.querySelector('input[name="is_admin"]:checked').value;
         let password = document.getElementById("password").value;
 
-        localStorage.setItem("Username", username);
-        localStorage.setItem("role", role);
-        localStorage.setItem("Password", password);
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", role === "True" ? "admin" : "teacher");
+        localStorage.setItem("password", password);
 
         window.location.href = "Login.html"; //direct to login page
 
