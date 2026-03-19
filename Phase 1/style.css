@@ -151,7 +151,7 @@ p {
 
 }
 
-#alert-overlay {
+#alert-overlay, #alert-overlay-success {
 
     position: fixed;
     /* Stays in place if scroll */
@@ -188,6 +188,40 @@ p {
     /* Centers the box perfectly */
     text-align: center;
     /*Center the text inside the alert box*/
+
+}
+
+#alert-box-success {
+
+    display: none;
+    /*Hide the alert box by default*/
+    background-color: #ffffff;
+    border: 1px solid #27ae60;
+    padding: 30px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+    position: absolute;
+    /*removes the element from the normal page flow so it doesn't push or stretch anything when it appears.*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Centers the box perfectly */
+    text-align: center;
+    /*Center the text inside the alert box*/
+
+}
+
+#error-msg{
+
+    display:none;
+    color:red;
+
+}
+
+#task-content {
+
+    display: none;
 
 }
 
@@ -274,15 +308,18 @@ button,
 
 }
 
-.btn-edit {
+.btn-primary {
 
     background-color: #3498db;
     color: white;
 
 }
 
-.btn-edit:hover {
+.btn-primary:hover {
+
     background-color: hsl(204, 65%, 48%);
+    color: white;
+
 }
 
 .btn-delete {
@@ -306,20 +343,6 @@ button,
 
 
 .btn-addtask:hover {
-
-    background-color: hsl(204, 65%, 48%);
-    color: white;
-
-}
-
-.btn-view {
-
-    background-color: #3498db;
-    color: white;
-
-}
-
-.btn-view:hover {
 
     background-color: hsl(204, 65%, 48%);
     color: white;
@@ -441,6 +464,7 @@ select {
     font-size: 12px;
     margin-top: 5px;
     color: #1e1e1e;
+    margin-bottom: 5px;
 
 }
 
@@ -449,18 +473,6 @@ input[type="radio"] {
     margin-right: 5px;
     accent-color: #3498db;
     /*Change the color of radio buttons to match the theme*/
-
-}
-
-input[type="text"].search {
-
-    width: 50%;
-    /*Allow the search input to shrink to fit its content*/
-    background-color: #ffffff;
-    outline: none;
-    /*Remove default focus outline*/
-    border-color: #3498db;
-    /*Change border color on focus*/
 
 }
 
@@ -478,16 +490,22 @@ input[type="text"].search {
 
 }
 
-select.sort {
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
 
-    width: 38.7%;
-    /*Allow the search input to shrink to fit its content*/
+input[type="text"].search {
+    flex: 3;
     background-color: #ffffff;
-    outline: none;
-    /*Remove default focus outline*/
     border-color: #3498db;
-    /*Change border color on focus*/
+}
 
+select.sort {
+    flex: 1;
+    background-color: #ffffff;
+    border-color: #3498db;
 }
 
 input:focus,

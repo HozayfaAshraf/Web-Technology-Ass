@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Task</title>    
+    <title>View Task</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
         <h1><a href="TeacherDashboard.html">School Task Portal</a></h1>
@@ -13,7 +15,9 @@
             <ul>
                 <li><a href="Profile.html">Profile</a></li>
                 <li><a href="TeacherDashboard.html">Dashboard</a></li>
-                <li><a href="#" onclick="localStorage.removeItem('username'); window.location.href='Homepage.html';">Log out</a></li>
+                <li><a href="#"
+                        onclick="localStorage.removeItem('username'); localStorage.removeItem('role'); window.location.href='Homepage.html';">Log
+                        out</a></li>
             </ul>
         </nav>
     </header>
@@ -21,14 +25,19 @@
     <main>
         <section class="form-container">
             <h2>View Task Details</h2>
-            
-            <div id="fetch-section" style="margin-bottom: 20px; padding: 10px; border: 1px dashed #ccc;">
-                <label for="searchId">Enter Task ID to view:</label>
-                <input type="number" id="searchId" placeholder="e.g. 101">
-                <button type="button" onclick="loadTask()">Load Task</button>
-            </div>
 
-            <div id="task-content" style="display:none;">
+            <fieldset>
+
+                <div id="fetch-section">
+                    <label for="searchId">Enter Task ID to view:</label>
+                    <input type="number" id="searchId" placeholder="e.g. 101">
+                    <button type="button" class="btn btn-primary"
+                        onclick='loadTask(document.getElementById("searchId").value)'>Load Task</button>
+                </div>
+
+            </fieldset>
+
+            <div id="task-content">
                 <fieldset>
                     <legend><strong>Task Information</strong></legend>
                     <p><strong>ID:</strong> <span id="v-id"></span></p>
@@ -39,32 +48,57 @@
                     <p id="v-desc" style="background:#f9f9f9; padding:10px; border-left:3px solid #007bff;"></p>
                 </fieldset>
             </div>
-            <p id="error-msg" style="color:red; display:none;">Task ID not found in system.</p>
+            <br>
+            <p id="error-msg">Task ID not found in system.</p>
         </section>
     </main>
 
+    <footer>
+        <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
+    </footer>
+
     <script>
-        function loadTask() {
-            let id = document.getElementById("searchId").value;
+
+        function loadTask(id) {
+
             let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            let task = tasks.find(t => String(t.id) === String(id));
+            let task = tasks.find(function (t) {
+                return String(t.id) === String(id);
+            });
 
             if (task) {
+
                 document.getElementById("task-content").style.display = "block";
                 document.getElementById("error-msg").style.display = "none";
                 document.getElementById("v-id").textContent = task.id;
                 document.getElementById("v-title").textContent = task.title;
                 document.getElementById("v-status").textContent = task.status;
                 document.getElementById("v-desc").textContent = task.description;
-                
+
                 let prio = document.getElementById("v-priority");
-                prio.textContent = task.priority;
-                prio.className = "priority-" + task.priority.toLowerCase();
-            } else {
+                prio.textContent = task.priority; //get priority
+                prio.className = "priority-" + task.priority.toLowerCase(); //apply color
+            }
+            else {
                 document.getElementById("task-content").style.display = "none";
                 document.getElementById("error-msg").style.display = "block";
             }
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            let taskId = localStorage.getItem("viewTaskId");
+
+            if (taskId) {
+
+                loadTask(taskId);
+
+                localStorage.removeItem("viewTaskId");
+
+            }
+
+        });
     </script>
 </body>
+
 </html>

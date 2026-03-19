@@ -104,8 +104,8 @@
 
             let taskId = localStorage.getItem("editTaskId");
             let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            let task = tasks.find(function (u) {
-                return String(u.id) === String(taskId);
+            let task = tasks.find(function (t) {
+                return String(t.id) === String(taskId);
             });
 
             if (task) {

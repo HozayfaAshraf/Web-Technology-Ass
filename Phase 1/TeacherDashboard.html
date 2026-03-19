@@ -18,7 +18,9 @@
             <ul>
                 <li><a href="Profile.html">Profile</a></li>
                 <li><a href="CompletedTasks.html">Completed Tasks</a></li>
-                <li><a href="#" onclick="localStorage.removeItem('username'); localStorage.removeItem('role'); window.location.href='Homepage.html';">Log out</a></li>
+                <li><a href="#"
+                        onclick="localStorage.removeItem('username'); localStorage.removeItem('role'); window.location.href='Homepage.html';">Log
+                        out</a></li>
             </ul>
         </nav>
 
@@ -32,12 +34,14 @@
 
         <form>
 
-            <input type="text" name="search" placeholder="Search tasks..." class="search">
-            <label for="sort">Sort by:</label>
-            <select id="sort" name="sort" class="sort">
-                <option value="priority">Priority</option>
-                <option value="status">Status</option>
-            </select>
+            <div class="search-bar">
+                <input type="text" name="search" placeholder="Search tasks..." class="search">
+                <select id="sort" name="sort" class="sort">
+                    <option value="" disabled selected>Sort by...</option>
+                    <option value="priority">Priority</option>
+                    <option value="status">Status</option>
+                </select>
+            </div>
             <button type="submit">Search</button>
 
         </form>
@@ -85,7 +89,7 @@
                     <td>${task.status}</td>
                     <td>${task.description}</td>
                     <td class="actions-data">
-                            <a href="ViewTask.html" class="btn btn-view" data-id="${task.id}">View</a>
+                            <a href="ViewTask.html" class="btn btn-view btn-primary" data-id="${task.id}">View</a>
                             <a href="#" class="btn btn-complete" data-id="${task.id}">Complete</a>
                     </td>
                 `;
@@ -118,6 +122,10 @@
                 localStorage.setItem("tasks", JSON.stringify(tasks));
                 location.reload();
 
+            }
+            else if(e.target.classList.contains("btn-view")){
+                let taskId = e.target.getAttribute("data-id");
+                localStorage.setItem("viewTaskId", taskId);
             }
 
         });

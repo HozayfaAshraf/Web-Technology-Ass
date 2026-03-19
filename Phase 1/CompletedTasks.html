@@ -69,7 +69,7 @@
                     <td>${task.status}</td>
                     <td>${task.description}</td>
                     <td class="actions-data">
-                            <a href="ViewTask.html" class="btn btn-view" data-id="${task.id}">View</a>
+                            <a href="ViewTask.html" class="btn btn-view btn-primary" data-id="${task.id}">View</a>
                     </td>
                 `;
 
@@ -79,6 +79,15 @@
 
             });
 
+
+        });
+
+        document.querySelector("tbody").addEventListener("click", function(e) {
+
+            if(e.target.classList.contains("btn-view")){
+                let taskId = e.target.getAttribute("data-id");
+                localStorage.setItem("viewTaskId", taskId);
+            }
 
         });
 
