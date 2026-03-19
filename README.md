@@ -1,3 +1,12 @@
+Names and IDs:
+
+- Hady Hassan El Fadaly 20236113
+- Hozaifa Ashraf 20236029
+- Omar Waleed El Sobky 20237008
+- Yassin Mohy Eldin 20236118
+
+- Project 3 - School Task Assignment Website
+
 Used Colors:
 
 - charcoal navy #2c3e50 as primary color (header,buttons)
