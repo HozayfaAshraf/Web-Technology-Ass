@@ -17,7 +17,5 @@ Finished Pages:
 - AddTask (Sobky)
 - CompletedTasks (Sobky)
 - EditTask (Sobky)
-
-Not Finished Pages:
-- PasswordReset
-- ViewTask
+- PasswordReset (Yassin)
+- ViewTask (Yassin)
