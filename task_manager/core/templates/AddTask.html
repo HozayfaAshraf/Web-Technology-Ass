@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6,19 +7,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Tasks</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
 
     <header>
-        <h1><a href="AdminDashboard.html">School Task Portal</a></h1>
+        <h1><a href="{% url 'admin_dashboard' %}">School Task Portal</a></h1>
         <nav>
             <ul>
-                <li><a href="Profile.html">Profile</a></li>
-                <li><a href="AdminDashboard.html">Dashboard</a></li>
-                <li><a href="#"
-                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='Homepage.html';">Log
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'homepage' %}"
+                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='{% url 'homepage' %}';">Log
                         out</a></li>
             </ul>
         </nav>
@@ -32,7 +33,7 @@
             <h2>Create a New Task</h2>
             <p>Fill out the details below to assign a new task to a teacher.</p>
 
-            <form action="AdminDashboard.html" method="GET">
+            <form action="{% url 'admin_dashboard' %}" method="GET">
                 <fieldset>
                     <legend>Task Details</legend>
 
@@ -100,7 +101,7 @@
     <script>
 
         if (!sessionStorage.getItem("username")) {
-            window.location.href = "Login.html";
+            window.location.href = "{% url 'login' %}";
         }
 
         document.addEventListener("DOMContentLoaded", function () {

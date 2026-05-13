@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6,17 +7,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
 
     <header>
-        <h1><a href="Homepage.html">School Task Portal</a></h1>
+        <h1><a href="{% url 'homepage' %}">School Task Portal</a></h1>
         <nav>
             <ul>
-                <li><a href="Homepage.html">Home</a></li>
-                <li><a href="Signup.html">Sign Up</a></li>
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'signup' %}">Sign Up</a></li>
             </ul>
         </nav>
     </header>
@@ -26,7 +27,7 @@
     <main>
         <h2>Login</h2>
 
-        <form action="Homepage.html" method="POST">
+        <form action="{% url 'homepage' %}" method="POST">
 
             <fieldset>
                 <legend><strong>Login Credentials</strong></legend>
@@ -43,7 +44,7 @@
                 </div>
             </fieldset>
 
-            <a href="PasswordReset.html" id="password-reset">Forgot password?</a>
+            <a href="{% url 'password_reset' %}" id="password-reset">Forgot password?</a>
 
             <div>
                 <button type="submit">Log In</button>
@@ -52,7 +53,7 @@
 
         <br>
 
-        <p><small>Don't have an account yet? <a href="Signup.html">Sign up here</a>.</small></p>
+        <p><small>Don't have an account yet? <a href="{% url 'signup' %}">Sign up here</a>.</small></p>
 
         <div id="alert-overlay">
             <div id="alert-box">
@@ -88,10 +89,10 @@
                 sessionStorage.setItem("role", found.role);
 
                 if (found.role === "admin") {
-                    window.location.href = "AdminDashboard.html";
+                    window.location.href = "{% url 'admin_dashboard' %}";
                 }
                 else {
-                    window.location.href = "TeacherDashboard.html";
+                    window.location.href = "{% url 'teacher_dashboard' %}";
                 }
             } else {
                 document.getElementById('alert-overlay').style.display = 'block';

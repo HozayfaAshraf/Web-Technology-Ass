@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6,19 +7,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
 
     <header>
 
-        <h1><a href="#">School Task Portal</a></h1>
+        <h1><a href="{% url 'homepage' %}">School Task Portal</a></h1>
         <nav>
             <ul>
                 <li><a href="#" id="dashboard-link">Dashboard</a></li>
                 <li><a href="#"
-                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='Homepage.html';">Log
+                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='{% url 'homepage' %}';">Log
                         out</a></li>
             </ul>
         </nav>
@@ -51,14 +52,14 @@
     <script>
 
         if (!sessionStorage.getItem("username")) {
-            window.location.href = "Login.html";
+            window.location.href = "{% url 'login' %}";
         }
 
         document.addEventListener("DOMContentLoaded", function () {
 
             let username = sessionStorage.getItem('username');
             let role = sessionStorage.getItem('role');
-            let dashboard = role === "admin" ? "AdminDashboard.html" : "TeacherDashboard.html";
+            let dashboard = role === "admin" ? "{% url 'admin_dashboard' %}" : "{% url 'teacher_dashboard' %}";
 
             document.querySelector("header h1 a").href = dashboard;
             document.getElementById("dashboard-link").href = dashboard;

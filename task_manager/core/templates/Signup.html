@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6,17 +7,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
 
     <header>
-        <h1><a href="Homepage.html">School Task Portal</a></h1>
+        <h1><a href="{% url 'homepage' %}">School Task Portal</a></h1>
         <nav>
             <ul>
-                <li><a href="Homepage.html">Home</a></li>
-                <li><a href="Login.html">Log in</a></li>
+                <li><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'login' %}">Log in</a></li>
             </ul>
         </nav>
     </header>
@@ -85,7 +86,7 @@
 
         <br>
 
-        <p><small>Already have an account? <a href="Login.html">Log in here</a>.</small></p>
+        <p><small>Already have an account? <a href="{% url 'login' %}">Log in here</a>.</small></p>
 
         <div id="alert-overlay">
             <div id="alert-box">
@@ -143,7 +144,7 @@
             users.push(user);
             localStorage.setItem("users", JSON.stringify(users));
 
-            window.location.href = "Login.html"; //direct to login page
+            window.location.href = "{% url 'login' %}"; //direct to login page
 
         });
 

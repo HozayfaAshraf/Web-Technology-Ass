@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,18 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Task</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
     <header>
-        <h1><a href="TeacherDashboard.html">School Task Portal</a></h1>
+        <h1><a href="{% url 'teacher_dashboard' %}">School Task Portal</a></h1>
         <nav>
             <ul>
-                <li><a href="Profile.html">Profile</a></li>
-                <li><a href="TeacherDashboard.html">Dashboard</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'teacher_dashboard' %}">Dashboard</a></li>
                 <li><a href="#"
-                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='Homepage.html';">Log
+                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='{% url 'homepage' %}';">Log
                         out</a></li>
             </ul>
         </nav>
@@ -60,7 +61,7 @@
     <script>
 
         if (!sessionStorage.getItem("username")) {
-            window.location.href = "Login.html";
+            window.location.href = "{% url 'login' %}";
         }
 
         function loadTask(id) {
