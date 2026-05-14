@@ -18,9 +18,7 @@
             <ul>
                 <li><a href="{% url 'profile' %}">Profile</a></li>
                 <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'homepage' %}"
-                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='{% url 'homepage' %}';">Log
-                        out</a></li>
+                <li><a href="{% url 'logout' %}">Log out</a></li>
             </ul>
         </nav>
     </header>
@@ -33,7 +31,8 @@
             <h2>Create a New Task</h2>
             <p>Fill out the details below to assign a new task to a teacher.</p>
 
-            <form action="{% url 'admin_dashboard' %}" method="GET">
+            <form action="{% url 'add_task' %}" method="POST">
+                {% csrf_token %}
                 <fieldset>
                     <legend>Task Details</legend>
 
@@ -52,7 +51,9 @@
                     <div>
                         <label for="teacherName">Assign to Teacher:</label><br>
                         <select id="teacherName" name="teacherName" required>
-                            <option value="" disabled selected>Select a Teacher...</option>
+                            {% for teacher in teachers %}
+                                <option value="{{ teacher.username }}">{{ teacher.username }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <br>
@@ -83,12 +84,15 @@
             </form>
         </section>
 
-        <div id="alert-overlay">
-            <div id="alert-box">
-                <p> Task ID already exists. Please choose a unique ID.</p> <br />
-                <button type="button" id="btn-close" class="btn-close">Close</button>
+        {% if error %}
+        <div id="alert-overlay" style="display: block;">
+            <div id="alert-box" style="display: block;">
+                <p>{{ error }}</p> <br />
+                <button type="button" id="btn-close" class="btn-close" 
+                onclick="this.parentElement.parentElement.style.display='none'">Close</button>
             </div>
         </div>
+        {% endif %}
 
     </main>
 
@@ -97,69 +101,6 @@
     <footer>
         <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
     </footer>
-
-    <script>
-
-        if (!sessionStorage.getItem("username")) {
-            window.location.href = "{% url 'login' %}";
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            let users = JSON.parse(localStorage.getItem("users")) || [];
-            let select = document.getElementById("teacherName");
-
-            users.forEach(function (user) {
-                if (user.role === "teacher") {
-                    let option = document.createElement("option");
-                    option.value = user.username;
-                    option.textContent = user.username;
-                    select.appendChild(option);
-                }
-            });
-        });
-
-        document.querySelector('form').addEventListener('submit', function (e) {
-
-            e.preventDefault(); //Prevent form from submitting
-
-            let task =
-            {
-
-                id: document.getElementById('taskId').value,
-                title: document.getElementById('taskTitle').value,
-                teacher: document.getElementById('teacherName').value,
-                priority: document.getElementById('priority').value,
-                description: document.getElementById('description').value,
-                status: "Pending"
-
-            }
-
-            //Get existing tasks or start with empty array
-            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-            let found = tasks.find(function (t) {
-                return t.id === task.id;
-            });
-
-            if (found) {
-                document.getElementById('alert-overlay').style.display = 'block';
-                document.getElementById('alert-box').style.display = 'block';
-                return;
-            }
-
-            tasks.push(task); //Add new task to array
-            localStorage.setItem('tasks', JSON.stringify(tasks)); //Save back to localStorage
-
-            // Optionally, reset the form after submission
-            this.reset();
-
-        });
-
-        document.getElementById('btn-close').addEventListener('click', function () {
-            document.getElementById('alert-overlay').style.display = 'none';
-            document.getElementById('alert-box').style.display = 'none';
-        });
-
-    </script>
 
 </body>
 

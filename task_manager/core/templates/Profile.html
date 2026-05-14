@@ -18,9 +18,7 @@
         <nav>
             <ul>
                 <li><a href="#" id="dashboard-link">Dashboard</a></li>
-                <li><a href="#"
-                        onclick="sessionStorage.removeItem('username'); sessionStorage.removeItem('role'); window.location.href='{% url 'homepage' %}';">Log
-                        out</a></li>
+                <li><a href="{% url 'logout' %}">Log out</a></li>
             </ul>
         </nav>
 

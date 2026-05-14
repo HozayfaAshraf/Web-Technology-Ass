@@ -27,8 +27,8 @@
     <main>
         <h2>Login</h2>
 
-        <form action="{% url 'homepage' %}" method="POST">
-
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
             <fieldset>
                 <legend><strong>Login Credentials</strong></legend>
 
@@ -55,12 +55,17 @@
 
         <p><small>Don't have an account yet? <a href="{% url 'signup' %}">Sign up here</a>.</small></p>
 
-        <div id="alert-overlay">
-            <div id="alert-box">
-                <p> Invalid username or password. Please try again.</p> <br />
-                <button type="button" id="btn-close" class="btn-close">Close</button>
+        {% if messages %}
+            <div id="alert-overlay" style="display: block;">
+                <div id="alert-box" style="display: block;">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                    <br />
+                    <button type="button" id="btn-close" class="btn-close">Close</button>
+                </div>
             </div>
-        </div>
+        {% endif %}
 
     </main>
 
@@ -70,43 +75,7 @@
         <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
     </footer>
 
-    <script>
-
-        document.querySelector('form').addEventListener('submit', function (e) {
-
-            e.preventDefault();
-
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            let users = JSON.parse(localStorage.getItem("users")) || [];
-            let found = users.find(function (u) {
-                return u.username === username && u.password === password;
-            });
-
-            if (found) {
-                sessionStorage.setItem("username", found.username);
-                sessionStorage.setItem("role", found.role);
-
-                if (found.role === "admin") {
-                    window.location.href = "{% url 'admin_dashboard' %}";
-                }
-                else {
-                    window.location.href = "{% url 'teacher_dashboard' %}";
-                }
-            } else {
-                document.getElementById('alert-overlay').style.display = 'block';
-                document.getElementById('alert-box').style.display = 'block';
-            }
-
-        });
-
-        document.getElementById('btn-close').addEventListener('click', function () {
-            document.getElementById('alert-overlay').style.display = 'none';
-            document.getElementById('alert-box').style.display = 'none';
-        });
-
-    </script>
+    <script src="{% static 'app.js' %}"></script>
 
 </body>
 

@@ -13,4 +13,7 @@ urlpatterns = [
     path('view-task/<int:task_id>/', views.view_task, name='view_task'),
     path('profile/', views.profile, name='profile'),
     path('completed-tasks/', views.completed_tasks, name='completed_tasks'),
+    path('logout/', views.logout_view, name='logout'),
+    path('check-username/', views.check_username, name='check_username'),
+    path('check-email/', views.check_email, name='check_email'),
 ]

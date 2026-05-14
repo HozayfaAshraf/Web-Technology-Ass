@@ -212,6 +212,14 @@ p {
 
 }
 
+#username-msg, email-msg {
+
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+
+}
+
 #error-msg{
 
     display:none;
