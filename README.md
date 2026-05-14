@@ -86,32 +86,24 @@
 
 ---
 
-### ⚠️ STILL TO DO / PARTIAL
+### ⚠️ STILL TO DO / CRITICAL FOR PHASE 3
 
-#### Views Still Missing or Partial
+The core features are in place, but the following items **must be addressed** to meet all Phase 3 requirements. The most critical issue is removing the final instances of `localStorage` and ensuring all data flows from the database.
 
-| View | Status | Priority | Effort |
-|------|--------|----------|--------|
-| `edit_task(request, task_id)` | Partial | HIGH | 15 min |
-| `completed_tasks(request)` | Not implemented | HIGH | 10 min |
-| `profile(request)` | Not implemented | MEDIUM | 15 min |
-| `password_reset(request)` | Not implemented | MEDIUM | 20 min |
+#### Views Still Requiring Work
 
-#### Template / UX Work Still Missing
-- [ ] CompletedTasks.html - Show completed tasks from the database
-- [ ] EditTask.html - Add form submission and task pre-population
-- [ ] Profile.html - Add user info display and edit form
-- [ ] PasswordReset.html - Add reset flow and validation
-- [ ] TeacherDashboard.html - Optional search and sort over fetched tasks
+| View | Status | Priority | Next Step |
+|------|--------|----------|-----------|
+| `edit_task(request, task_id)` | Partial | **HIGH** | Implement POST logic to save changes to the database. |
+| `profile(request)` | Not Implemented | **HIGH** | Build view to fetch and display user data; create form to update it. |
+| `password_reset(request)` | Not Implemented | **HIGH** | Implement server-side logic for password validation and update. |
 
-#### Optional Enhancements
-- [ ] Search/sort for TeacherDashboard if needed
-- [ ] Better feedback messages for task updates
-- [ ] Extra validation on form fields where helpful
+#### Critical Template/UX Work
 
-#### Notes
-- The old `localStorage` flow has been removed from the key task workflows.
-- AJAX is already used in more than 2 places, so the Phase 3 AJAX requirement is satisfied.
+- [ ] **Remove `localStorage` from `EditTask.html`**: The page must fetch task data from the `edit_task` view and submit changes via a POST request.
+- [ ] **Remove `localStorage` from `Profile.html`**: The page must be driven by data from the `profile` view.
+- [ ] **Remove `localStorage` from `PasswordReset.html`**: The entire flow must be handled on the server.
+- [ ] **Add Server-Side Validation**: Per Phase 3 requirements, add robust validation to forms in `AddTask`, `EditTask`, `Signup`, etc., to handle empty fields and invalid data.
 
 ---
 
@@ -119,33 +111,30 @@
 
 Follow this order to finish the remaining Phase 3 items efficiently:
 
-### Step 1: Finish Remaining Views (30-45 minutes)
-Implement these next:
-1. `edit_task(request, task_id)` - GET/POST update task data
-2. `completed_tasks(request)` - Query completed tasks from the DB
-3. `profile(request)` - Show and edit user info
-4. `password_reset(request)` - Add a reset form and validation
+### Step 1: Remove `localStorage` & Implement Views (45-60 minutes)
+This is the highest priority.
+1.  **Fix `edit_task`**:
+    -   Update the `edit_task` view in `views.py` to handle GET (pre-populate form from DB) and POST (save changes to DB).
+    -   Remove all `localStorage` logic from `EditTask.html`.
+2.  **Implement `profile`**:
+    -   Create the `profile` view to fetch the logged-in user's data.
+    -   Implement a form on `Profile.html` to allow users to update their info, backed by the database.
+3.  **Implement `password_reset`**:
+    -   Build the server-side flow in the `password_reset` view to validate the user and update their password securely.
 
-### Step 2: Template Updates (30-45 minutes)
-Wire the remaining pages to database-backed data:
-1. `CompletedTasks.html`
-2. `EditTask.html`
-3. `Profile.html`
-4. `PasswordReset.html`
+### Step 2: Add Server-Side Validation (15-20 minutes)
+1.  Go through `add_task`, `edit_task`, and `signup_view`.
+2.  Add checks to ensure required fields are not empty and handle potential errors gracefully, using the Django messages framework.
 
-### Step 3: Optional Enhancements
-- Add search/sort behavior to TeacherDashboard if needed
-- Add better feedback messages for task updates
-- Add extra validation on form fields where helpful
-
-### Step 4: Database Check
+### Step 3: Final Review & Database Check
+- Review all pages to ensure they work as expected.
+- Run migrations if any model changes were made (unlikely).
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
-Run these if you want to rebuild the SQLite schema from the models.
 
-**Estimated remaining time: ~1 to 2 hours, depending on how much validation you want to add.**
+**Estimated remaining time: ~1.5 to 2 hours.**
 
 ---
 

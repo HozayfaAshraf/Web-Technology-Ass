@@ -158,7 +158,30 @@ def profile(request):
     return render(request, 'Profile.html')\
     
 def completed_tasks(request):
-    return render(request, 'CompletedTasks.html')
+    # require login and teacher role
+    if not request.session.get('username'):
+        return redirect('login')
+    if request.session.get('role') != 'teacher':
+        return HttpResponseForbidden()
+
+    username = request.session.get('username')
+    completed_tasks_qs = Tasks.objects.select_related('assigned_to', 'assigned_by').filter(
+        assigned_to__username=username,
+        status='Completed'
+    )
+
+    completed_tasks = []
+    for task in completed_tasks_qs:
+        completed_tasks.append({
+            'id': task.id,
+            'title': task.title,
+            'assigned_by': task.assigned_by.username if task.assigned_by else None,
+            'priority': task.priority,
+            'status': task.status,
+            'description': task.description,
+        })
+
+    return render(request, 'CompletedTasks.html', {'completed_tasks': completed_tasks})
 
 def logout_view(request):
 

@@ -33,6 +33,7 @@
                     <tr>
                         <th>Task ID</th>
                         <th>Title</th>
+                        <th>Assigned By</th>
                         <th>Priority</th>
                         <th>Status</th>
                         <th>Description</th>
@@ -40,7 +41,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Task rows will be dynamically inserted here -->
+                    {% for task in completed_tasks %}
+                    <tr>
+                        <td>{{ task.id }}</td>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.assigned_by }}</td>
+                        <td class="priority-{{ task.priority|lower }}">{{ task.priority }}</td>
+                        <td>{{ task.status }}</td>
+                        <td>{{ task.description }}</td>
+                        <td class="actions-data">
+                            <a href="/view-task/{{ task.id }}/" class="btn btn-view btn-primary">View</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">No completed tasks found.</td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
 
@@ -52,51 +69,6 @@
     <footer>
         <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
     </footer>
-
-    <script>
-
-        if (!sessionStorage.getItem("username")) {
-            window.location.href = "{% url 'login' %}";
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            let tbody = document.querySelector("tbody");
-
-            tasks.forEach(function (task) {
-
-                let row =
-                    `<tr>
-                    <td>${task.id}</td>
-                    <td>${task.title}</td>
-                    <td class="priority-${task.priority.toLowerCase()}">${task.priority}</td>
-                    <td>${task.status}</td>
-                    <td>${task.description}</td>
-                    <td class="actions-data">
-                            <a href=\"/view-task/${task.id}/\" class=\"btn btn-view btn-primary\" data-id=\"${task.id}\">View</a>
-                    </td>
-                `;
-
-                if (task.status === "Completed" && task.teacher === sessionStorage.getItem("username")) {
-                    tbody.innerHTML += row;
-                }
-
-            });
-
-
-        });
-
-        document.querySelector("tbody").addEventListener("click", function (e) {
-
-            if (e.target.classList.contains("btn-view")) {
-                let taskId = e.target.getAttribute("data-id");
-                localStorage.setItem("viewTaskId", taskId);
-            }
-
-        });
-
-    </script>
 
 </body>
 
