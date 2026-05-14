@@ -1,6 +1,6 @@
 from django.template import loader
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password #for hashing passwords
 from .models import Users, Tasks
@@ -85,7 +85,13 @@ def admin_dashboard(request):
     return render(request, 'AdminDashboard.html')
 
 def teacher_dashboard(request):
-    return render(request, 'TeacherDashboard.html')
+    # require login and teacher role
+    if not request.session.get('username'):
+        return redirect('login')
+    if request.session.get('role') != 'teacher':
+        return HttpResponseForbidden()
+
+    return render(request, 'TeacherDashboard.html', {'username': request.session.get('username')})
 
 def add_task(request):
 
@@ -100,28 +106,21 @@ def add_task(request):
     
     if request.method == 'POST':
 
-        task_id = request.POST.get('taskId')
         title = request.POST.get('taskTitle')
         teacher = request.POST.get('teacherName')
         assigned_by = request.session.get('username')
         priority = request.POST.get('priority')
         description = request.POST.get('description')
-        
-        #check if task ID already exists
-        if Tasks.objects.filter(id=task_id).exists():
 
-            #show error
-            return render(request, 'AddTask.html', {
-                'teachers': teachers,
-                'error': 'Task ID already exists. Please choose a unique ID.'
-            })
-        
-        #add task to database
+        #resolve teacher and assigned_by to user objects
+        teacher_user = Users.objects.get(username=teacher)
+        assigned_by_user = Users.objects.get(username=assigned_by)
+
+        #add task to database (use FK instances)
         Tasks.objects.create(
-            id=task_id,
             title=title,
-            teacher=teacher,
-            assigned_by=assigned_by,
+            assigned_to=teacher_user,
+            assigned_by=assigned_by_user,
             priority=priority,
             description=description,
             status='Pending'
@@ -148,10 +147,12 @@ def view_task(request, task_id):
     #check if user is logged in using Django sessions, not sessionStorage
     if not request.session.get('username'):
         return redirect('login')
-    if request.session.get('role') != 'admin':
+    if request.session.get('role') != 'teacher':
         return HttpResponseForbidden()
     
-    return render(request, 'ViewTask.html')
+    task = Tasks.objects.filter(id=task_id).first()
+    
+    return render(request, 'ViewTask.html', {'task': task})
 
 def profile(request):
     return render(request, 'Profile.html')\
@@ -181,3 +182,59 @@ def check_email(request):
     exists = Users.objects.filter(email=email).exists()
 
     return JsonResponse({'exists': exists})
+
+def get_tasks_api(request):
+
+    #return tasks with resolved usernames for frontend consumption
+    tasks_qs = Tasks.objects.select_related('assigned_to', 'assigned_by').filter(assigned_by__username=request.session.get('username'))
+    tasks = []
+    for t in tasks_qs:
+        tasks.append({
+            'id': t.id,
+            'title': t.title,
+            'teacher': t.assigned_to.username if t.assigned_to else None,
+            'priority': t.priority,
+            'status': t.status,
+            'description': t.description,
+        })
+
+    return JsonResponse({'tasks': tasks})
+
+def get_teacher_tasks_api(request):
+
+    user = request.session.get('username')
+
+    #return tasks with resolved usernames for frontend consumption
+    tasks_qs = Tasks.objects.select_related('assigned_to', 'assigned_by').filter(assigned_to__username=user)
+    tasks = []
+    for t in tasks_qs:
+        tasks.append({
+            'id': t.id,
+            'title': t.title,
+            'teacher': t.assigned_to.username if t.assigned_to else None,
+            'assigned_by': t.assigned_by.username if t.assigned_by else None,
+            'priority': t.priority,
+            'status': t.status,
+            'description': t.description,
+        })
+
+    return JsonResponse({'tasks': tasks})
+
+def complete_task_api(request, task_id):
+    
+    if not request.session.get('username'):
+        return redirect('login')
+    if request.session.get('role') != 'teacher':
+        return HttpResponseForbidden()
+
+    task = get_object_or_404(Tasks, id=task_id, assigned_to__username=request.session.get('username'))
+    task.status = 'Completed'
+    task.save()
+
+    return JsonResponse({'success': True})
+
+def delete_task_api(request, task_id):
+    if request.method == 'POST':
+        Tasks.objects.filter(id=task_id).delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})

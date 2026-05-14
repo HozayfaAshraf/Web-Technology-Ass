@@ -16,4 +16,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('check-username/', views.check_username, name='check_username'),
     path('check-email/', views.check_email, name='check_email'),
+    path('api/tasks/', views.get_tasks_api, name='get_tasks_api'),
+    path('api/delete-task/<int:task_id>/', views.delete_task_api, name='delete_task_api'),
+    path('api/teacher-tasks/', views.get_teacher_tasks_api, name='get_teacher_tasks_api'),
+    path('api/complete-task/<int:task_id>/', views.complete_task_api, name='complete_task_api'),
 ]

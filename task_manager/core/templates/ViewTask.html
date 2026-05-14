@@ -25,30 +25,24 @@
         <section class="form-container">
             <h2>View Task Details</h2>
 
-            <fieldset>
-
-                <div id="fetch-section">
-                    <label for="searchId">Enter Task ID to view:</label>
-                    <input type="number" id="searchId" placeholder="e.g. 101">
-                    <button type="button" class="btn btn-primary"
-                        onclick='loadTask(document.getElementById("searchId").value)'>Load Task</button>
-                </div>
-
-            </fieldset>
-
             <div id="task-content">
                 <fieldset>
+                    {% if task %}
                     <legend><strong>Task Information</strong></legend>
-                    <p><strong>ID:</strong> <span id="v-id"></span></p>
-                    <p><strong>Title:</strong> <span id="v-title"></span></p>
-                    <p><strong>Status:</strong> <span id="v-status"></span></p>
-                    <p><strong>Priority:</strong> <span id="v-priority"></span></p>
+                    <p><strong>ID:</strong> <span id="v-id">{{ task.id }}</span></p>
+                    <p><strong>Title:</strong> <span id="v-title">{{ task.title }}</span></p>
+                    <p><strong>Assigned By:</strong> <span id="v-assignedby">{{ task.assigned_by.username }}</span></p>
+                    <p><strong>Status:</strong> <span id="v-status">{{ task.status }}</span></p>
+                    <p><strong>Priority:</strong> <span class="priority-{{ task.priority|lower }}">{{ task.priority }}</span></p>
                     <p><strong>Description:</strong></p>
-                    <p id="v-desc" style="background:#f9f9f9; padding:10px; border-left:3px solid #007bff;"></p>
+                    <p id="v-desc" style="background:#f9f9f9; padding:10px; border-left:3px solid #007bff;">{{ task.description }}</p>
+                    {% endif %}
                 </fieldset>
             </div>
             <br>
-            <p id="error-msg">Task ID not found in system.</p>
+            {% if not task %}
+            <p id="error-msg" style="display:block">Task ID not found in system.</p>
+            {% endif %}
         </section>
     </main>
 
@@ -56,52 +50,6 @@
         <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
     </footer>
 
-    <script>
-
-        if (!sessionStorage.getItem("username")) {
-            window.location.href = "{% url 'login' %}";
-        }
-
-        function loadTask(id) {
-
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            let task = tasks.find(function (t) {
-                return String(t.id) === String(id);
-            });
-
-            if (task) {
-
-                document.getElementById("task-content").style.display = "block";
-                document.getElementById("error-msg").style.display = "none";
-                document.getElementById("v-id").textContent = task.id;
-                document.getElementById("v-title").textContent = task.title;
-                document.getElementById("v-status").textContent = task.status;
-                document.getElementById("v-desc").textContent = task.description;
-
-                let prio = document.getElementById("v-priority");
-                prio.textContent = task.priority; //get priority
-                prio.className = "priority-" + task.priority.toLowerCase(); //apply color
-            }
-            else {
-                document.getElementById("task-content").style.display = "none";
-                document.getElementById("error-msg").style.display = "block";
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            let taskId = localStorage.getItem("viewTaskId");
-
-            if (taskId) {
-
-                loadTask(taskId);
-
-                localStorage.removeItem("viewTaskId");
-
-            }
-
-        });
-    </script>
 </body>
 
 </html>

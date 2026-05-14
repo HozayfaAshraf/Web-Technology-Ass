@@ -53,6 +53,7 @@
                     <th>Task ID</th>
                     <th>Title</th>
                     <th>Priority</th>
+                    <th>Assigned By</th>
                     <th>Status</th>
                     <th>Description</th>
                     <th id="actions">Actions</th>
@@ -72,100 +73,71 @@
 
     <script>
 
-        if (!sessionStorage.getItem("username")) {
-            window.location.href = "{% url 'login' %}";
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+        fetch('/api/teacher-tasks/')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
 
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            let tbody = document.querySelector("tbody");
-            let username = sessionStorage.getItem("username");
-
-            tasks.forEach(function (task) {
-
-                let row =
-                    `<tr>
-                    <td>${task.id}</td>
-                    <td>${task.title}</td>
-                    <td class="priority-${task.priority.toLowerCase()}">${task.priority}</td>
-                    <td>${task.status}</td>
-                    <td>${task.description}</td>
-                    <td class="actions-data">
-                            <a href="/view-task/${task.id}/" class="btn btn-view btn-primary" data-id="${task.id}">View</a>
-                            <a href="/complete-task/${task.id}/" class="btn btn-complete" data-id="${task.id}">Complete</a>
-                    </td>
-                `;
-
-                if (task.teacher === username && task.status != "Completed") {
-                    tbody.innerHTML += row;
-                }
-
+                data.tasks.forEach(function (task) {
+                    if (task.status !== 'Completed') {
+                        const row = `
+                            <tr>
+                                <td>${task.id}</td>
+                                <td>${task.title}</td>
+                                <td class="priority-${task.priority.toLowerCase()}">${task.priority}</td>
+                                <td>${task.assigned_by}</td>
+                                <td>${task.status}</td>
+                                <td>${task.description}</td>
+                                <td class="actions-data">
+                                    <a href="/view-task/${task.id}/" class="btn btn-view btn-primary" data-id="${task.id}">View</a>
+                                    <a href="#" class="btn btn-complete" data-id="${task.id}">Complete</a>
+                                </td>
+                            </tr>`;
+                        tbody.innerHTML += row;
+                    }
+                });
             });
 
-
-        });
-
-        document.querySelector("tbody").addEventListener("click", function (e) {
-
-            if (e.target.classList.contains("btn-complete")) {
-
-                e.preventDefault();
-
-                //filter out completed task and save back to localStorage
-                let taskId = e.target.getAttribute("data-id");
-                let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-                tasks = tasks.map(function (task) {
-                    if (String(task.id) === String(taskId)) {
-                        task.status = "Completed";
-                    }
-                    return task;
-                });
-
-                localStorage.setItem("tasks", JSON.stringify(tasks));
-                location.reload();
-
+        document.querySelector('tbody').addEventListener('click', function (e) {
+            if (!e.target.classList.contains('btn-complete')) {
+                return;
             }
-            else if (e.target.classList.contains("btn-view")) {
-                let taskId = e.target.getAttribute("data-id");
-                localStorage.setItem("viewTaskId", taskId);
-            }
-
-        });
-        document.querySelector("form").addEventListener("submit", function (e) {
 
             e.preventDefault();
+            const taskId = e.target.getAttribute('data-id');
 
-            let searchTerm = document.querySelector(".search").value.toLowerCase();
-            let sortOption = document.querySelector(".sort").value;
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            let tbody = document.querySelector("tbody");
-            tbody.innerHTML = "";
-
-            if (sortOption) {
-                tasks.sort(function (a, b) {
-                    if (a[sortOption] < b[sortOption]) return -1;
-                    if (a[sortOption] > b[sortOption]) return 1;
-                    return 0;
-                });
-            }
-
-            tasks.forEach(function (task) {
-                if ((task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)) && task.teacher === sessionStorage.getItem("username") && task.status != "Completed") {
-                    let row = `<tr>
-                <td>${task.id}</td>
-                <td>${task.title}</td>
-                <td class="priority-${task.priority.toLowerCase()}">${task.priority}</td>
-                <td>${task.status}</td>
-                <td>${task.description}</td>
-                <td class="actions-data">
-                    <a href="/view-task/${task.id}/" class="btn btn-view btn-primary" data-id="${task.id}">View</a>
-                    <a href="#" class="btn btn-complete" data-id="${task.id}">Complete</a>
-                </td>
-            </tr>`;
-                    tbody.innerHTML += row;
+            fetch(`/api/complete-task/${taskId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
                 }
-            });
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        e.target.closest('tr').remove();
+                    }
+                });
+        });
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            e.preventDefault();
         });
 
     </script>

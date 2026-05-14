@@ -40,14 +40,15 @@
 - [x] CSS styling applied
 - [x] Django template tags for navigation links
 - [x] Django static files configuration
-- [x] Shared JavaScript file (script.js) for reusable logic
+- [x] Shared JavaScript handling for reusable UI behavior
+- [x] In-webpage confirmation modal for deleting tasks
 
 #### Backend Setup (Django)
 - [x] Django project initialized
 - [x] SQLite database configured
-- [x] URL routing configured (15 routes + AJAX endpoints)
+- [x] URL routing configured with page routes and AJAX endpoints
 - [x] View functions mapped to templates
-- [x] Database models created (Users, Tasks)
+- [x] Database models created (`Users`, `Tasks`)
 
 #### Authentication & Security
 - [x] Session-based authentication (server-side, not localStorage)
@@ -57,11 +58,17 @@
 - [x] Signup view with uniqueness checks
 - [x] Logout functionality
 - [x] Django messages framework for error/success display
+- [x] Admin-only and teacher-only access checks in views
 
 #### API Endpoints (AJAX) - Phase 3 Requirement ✓
 - [x] `GET /check-username/` - Username availability check (AJAX)
 - [x] `GET /check-email/` - Email availability check (AJAX)
-- **AJAX count: 2 scenarios completed** ✅
+- [x] `GET /api/tasks/` - Admin dashboard task list
+- [x] `GET /api/teacher-tasks/` - Teacher dashboard task list
+- [x] `GET /api/task/<id>/` - Single task details for View Task
+- [x] `POST /api/complete-task/<id>/` - Mark task complete
+- [x] `POST /api/delete-task/<id>/` - Delete task from admin dashboard
+- **AJAX requirement: satisfied with more than 2 scenarios** ✅
 
 #### View Implementations
 - [x] `homepage(request)` - Display homepage
@@ -71,84 +78,74 @@
 - [x] `add_task(request)` - Admin task creation with teacher dropdown
 - [x] `check_username(request)` - AJAX endpoint
 - [x] `check_email(request)` - AJAX endpoint
+- [x] `admin_dashboard(request)` - Admin dashboard access control
+- [x] `teacher_dashboard(request)` - Teacher dashboard access control
+- [x] `view_task(request, task_id)` - Show task details to teacher
+- [x] `delete_task_api(request, task_id)` - Remove task by AJAX
+- [x] `complete_task_api(request, task_id)` - Mark task completed by AJAX
 
 ---
 
-### ❌ TODO - CRITICAL (Phase 3 Requirements)
+### ⚠️ STILL TO DO / PARTIAL
 
-#### 1. Database Migrations (MUST DO FIRST)
-- [ ] Run `python manage.py makemigrations`
-- [ ] Run `python manage.py migrate`
-- [ ] Verify Users and Tasks tables in database
-
-#### 2. View Implementations (Follow AddTask Pattern)
+#### Views Still Missing or Partial
 
 | View | Status | Priority | Effort |
 |------|--------|----------|--------|
-| `view_task(request, task_id)` | Not implemented | HIGH | 10 min |
-| `edit_task(request, task_id)` | Session check only | HIGH | 15 min |
+| `edit_task(request, task_id)` | Partial | HIGH | 15 min |
 | `completed_tasks(request)` | Not implemented | HIGH | 10 min |
-| `teacher_dashboard(request)` | Session check only | HIGH | 10 min |
-| `admin_dashboard(request)` | Session check only | HIGH | 10 min |
 | `profile(request)` | Not implemented | MEDIUM | 15 min |
 | `password_reset(request)` | Not implemented | MEDIUM | 20 min |
 
-#### 3. Template Updates
-- [ ] AdminDashboard.html - Add task/user display loop
-- [ ] TeacherDashboard.html - Add assigned tasks display loop
-- [ ] CompletedTasks.html - Add completed tasks display loop
-- [ ] EditTask.html - Add form with task pre-population
-- [ ] ViewTask.html - Add task details display
+#### Template / UX Work Still Missing
+- [ ] CompletedTasks.html - Show completed tasks from the database
+- [ ] EditTask.html - Add form submission and task pre-population
 - [ ] Profile.html - Add user info display and edit form
-- [ ] PasswordReset.html - Add password reset form
+- [ ] PasswordReset.html - Add reset flow and validation
+- [ ] TeacherDashboard.html - Optional search and sort over fetched tasks
 
-#### 4. Task Operations
-- [ ] Task deletion functionality
-- [ ] Task status updates (mark as complete)
-- [ ] Task filtering and search
+#### Optional Enhancements
+- [ ] Search/sort for TeacherDashboard if needed
+- [ ] Better feedback messages for task updates
+- [ ] Extra validation on form fields where helpful
 
-#### 5. Advanced Features (Optional)
-- [ ] Email-based password reset
-- [ ] User profile editing
-- [ ] Admin system statistics
+#### Notes
+- The old `localStorage` flow has been removed from the key task workflows.
+- AJAX is already used in more than 2 places, so the Phase 3 AJAX requirement is satisfied.
 
 ---
 
 ## 🚀 RECOMMENDED IMPLEMENTATION ORDER (Fastest Path)
 
-Follow this order to complete Phase 3 efficiently:
+Follow this order to finish the remaining Phase 3 items efficiently:
 
-### Step 1: Database Activation (5 minutes)
+### Step 1: Finish Remaining Views (30-45 minutes)
+Implement these next:
+1. `edit_task(request, task_id)` - GET/POST update task data
+2. `completed_tasks(request)` - Query completed tasks from the DB
+3. `profile(request)` - Show and edit user info
+4. `password_reset(request)` - Add a reset form and validation
+
+### Step 2: Template Updates (30-45 minutes)
+Wire the remaining pages to database-backed data:
+1. `CompletedTasks.html`
+2. `EditTask.html`
+3. `Profile.html`
+4. `PasswordReset.html`
+
+### Step 3: Optional Enhancements
+- Add search/sort behavior to TeacherDashboard if needed
+- Add better feedback messages for task updates
+- Add extra validation on form fields where helpful
+
+### Step 4: Database Check
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
-This unlocks your Users and Tasks tables. **DO THIS FIRST!**
+Run these if you want to rebuild the SQLite schema from the models.
 
-### Step 2: View Implementations (Follow AddTask Pattern - 1 hour)
-Implement views in this order:
-1. `view_task(request, task_id)` - Query task, pass to template
-2. `edit_task(request, task_id)` - GET: show form, POST: validate & update
-3. `completed_tasks(request)` - Filter Tasks by status='Completed'
-4. `admin_dashboard(request)` - Query all tasks/users
-5. `teacher_dashboard(request)` - Query assigned tasks
-6. `profile(request)` - Display/edit user info
-7. `password_reset(request)` - Password reset form + logic
-
-### Step 3: Template Updates (1 hour)
-Add data display loops to dashboard/list templates:
-- AdminDashboard.html: `{% for task in tasks %}`
-- TeacherDashboard.html: `{% for task in assigned_tasks %}`
-- CompletedTasks.html: `{% for task in completed_tasks %}`
-- EditTask.html: Pre-populate form with task data
-- ViewTask.html: Display task details
-
-### Step 4: Task Operations (30 minutes)
-- Add delete buttons/views
-- Add "mark complete" functionality
-- Add status update endpoints
-
-**Total Time: ~2.5 hours to completion!**
+**Estimated remaining time: ~1 to 2 hours, depending on how much validation you want to add.**
 
 ---
 
@@ -205,10 +202,10 @@ task_manager/
 │   │   └── ViewTask.html
 │   ├── admin.py
 │   ├── apps.py
-│   ├── models.py ⚠️ Needs migration
+│   ├── models.py
 │   ├── tests.py
 │   ├── urls.py
-│   └── views.py ⚠️ Needs implementation
+│   └── views.py
 ├── task_manager/
 │   ├── __init__.py
 │   ├── asgi.py
@@ -226,3 +223,4 @@ task_manager/
 - Data must be in database, not localStorage
 - All validation must be server-side (Django forms)
 - AJAX required for at least 2 features
+- Current AJAX features include signup checks, admin task listing/deletion, teacher task listing, task completion, and single-task viewing.

@@ -91,15 +91,25 @@
         <p><small>Already have an account? <a href="{% url 'login' %}">Log in here</a>.</small></p>
 
         {% if messages %}
-        <div id="alert-overlay" style="display: block;">
-            <div id="alert-box" style="display: block;">
-                {% for message in messages %}
-                <p>{{ message }}</p>
-                {% endfor %}
-                <br />
-                <button type="button" id="btn-close" class="btn-close">Close</button>
-            </div>
-        </div>
+            {% for message in messages %}
+                {% if 'error' in message.tags %}
+                <div id="alert-overlay" style="display: block;">
+                    <div id="alert-box" style="display: block;">
+                        <p>{{ message }}</p>
+                        <br />
+                        <button type="button" id="btn-close" class="btn-close">Close</button>
+                    </div>
+                </div>
+                {% elif 'success' in message.tags %}
+                <div id="alert-overlay-success" style="display: block;">
+                    <div id="alert-box-success" style="display: block;">
+                        <p>{{ message }}</p>
+                        <br />
+                        <button type="button" id="btn-complete" class="btn-complete">Close</button>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
         {% endif %}
 
     </main>
@@ -127,7 +137,7 @@
             let username = this.value;
             let msgSpan = document.getElementById('username-msg');
 
-            if(username.length < 3) {
+            if (username.length < 3) {
                 msgSpan.textContent = '';
                 return;
             }
