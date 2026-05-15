@@ -29,14 +29,38 @@
     <main>
 
         <h2>My Profile</h2>
+        
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
         <fieldset>
             <legend>Account Details</legend>
-            <p id="profile-username"></p>
-            <br>
-            <p id="profile-email"></p>
-            <br>
-            <p id="profile-role"></p>
+            <form method="POST">
+                {% csrf_token %}
+                <div>
+                    <label for="username">Username:</label><br>
+                    <input type="text" id="username" name="username" value="{{ user.username }}" required>
+                </div>
+                <br>
+                <div>
+                    <label for="email">Email:</label><br>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+                <br>
+                <div>
+                    <label>Role:</label><br>
+                    <input type="text" value="{% if user.role == 'admin' %}School Admin{% else %}Teacher{% endif %}" readonly disabled>
+                </div>
+                <br>
+                <div class="form-actions">
+                    <button type="submit">Update Profile</button>
+                </div>
+            </form>
         </fieldset>
 
     </main>
@@ -48,36 +72,16 @@
     </footer>
 
     <script>
-
-        if (!sessionStorage.getItem("username")) {
-            window.location.href = "{% url 'login' %}";
-        }
-
         document.addEventListener("DOMContentLoaded", function () {
-
-            let username = sessionStorage.getItem('username');
-            let role = sessionStorage.getItem('role');
+            let role = "{{ request.session.role }}";
             let dashboard = role === "admin" ? "{% url 'admin_dashboard' %}" : "{% url 'teacher_dashboard' %}";
-
-            document.querySelector("header h1 a").href = dashboard;
-            document.getElementById("dashboard-link").href = dashboard;
-
-            let users = JSON.parse(localStorage.getItem("users")) || [];
-            let user = users.find(function (u) {
-                return u.username === username;
-            })
-
-            if (user) {
-
-                let role1 = user.role === "admin" ? "School Admin" : "Teacher";
-
-                document.getElementById("profile-username").innerHTML = `<strong>Username: </strong> ${user.username}`;
-                document.getElementById("profile-email").innerHTML = `<strong>Email: </strong> ${user.email}`;
-                document.getElementById("profile-role").innerHTML = `<strong>Role: </strong> ${role1}`;
-            }
-
+            
+            let headerLogo = document.querySelector("header h1 a");
+            if (headerLogo) headerLogo.href = dashboard;
+            
+            let dashboardLink = document.getElementById("dashboard-link");
+            if (dashboardLink) dashboardLink.href = dashboard;
         });
-
     </script>
 
 </body>

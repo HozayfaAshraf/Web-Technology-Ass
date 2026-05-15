@@ -72,6 +72,29 @@ def signup_view(request):
     return render(request, 'Signup.html')
 
 def password_reset(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if not email or not new_password or not confirm_password:
+            messages.error(request, 'All fields are required.')
+            return render(request, 'PasswordReset.html')
+            
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'PasswordReset.html')
+            
+        try:
+            user = Users.objects.get(email=email)
+            user.password = make_password(new_password)
+            user.save()
+            messages.success(request, 'Password reset successful. Please log in.')
+            return redirect('login')
+        except Users.DoesNotExist:
+            messages.error(request, 'No account found with this email.')
+            return render(request, 'PasswordReset.html')
+            
     return render(request, 'PasswordReset.html')
 
 def admin_dashboard(request):
@@ -112,6 +135,10 @@ def add_task(request):
         priority = request.POST.get('priority')
         description = request.POST.get('description')
 
+        if not title or not teacher or not priority or not description:
+            messages.error(request, 'All fields are required.')
+            return render(request, 'AddTask.html', {'teachers': teachers})
+
         #resolve teacher and assigned_by to user objects
         teacher_user = Users.objects.get(username=teacher)
         assigned_by_user = Users.objects.get(username=assigned_by)
@@ -140,7 +167,33 @@ def edit_task(request, task_id):
     if request.session.get('role') != 'admin':
         return HttpResponseForbidden()
     
-    return render(request, 'EditTask.html')
+    task = get_object_or_404(Tasks, id=task_id)
+    teachers = Users.objects.filter(role='teacher')
+    
+    if request.method == 'POST':
+        title = request.POST.get('taskTitle')
+        teacher_username = request.POST.get('teacherName')
+        priority = request.POST.get('priority')
+        description = request.POST.get('description')
+        
+        if not title or not teacher_username or not priority or not description:
+            messages.error(request, 'All fields are required.')
+            return render(request, 'EditTask.html', {'task': task, 'teachers': teachers})
+            
+        
+        teacher_user = Users.objects.get(username=teacher_username)
+        task.title = title
+        task.assigned_to = teacher_user
+        task.priority = priority
+        task.description = description
+
+        task.save()
+
+        messages.success(request, 'Task updated successfully.')
+        return redirect('admin_dashboard')
+
+            
+    return render(request, 'EditTask.html', {'task': task, 'teachers': teachers})
 
 def view_task(request, task_id):
 
@@ -155,33 +208,45 @@ def view_task(request, task_id):
     return render(request, 'ViewTask.html', {'task': task})
 
 def profile(request):
-    return render(request, 'Profile.html')\
     
-def completed_tasks(request):
-    # require login and teacher role
     if not request.session.get('username'):
         return redirect('login')
-    if request.session.get('role') != 'teacher':
-        return HttpResponseForbidden()
-
+        
     username = request.session.get('username')
-    completed_tasks_qs = Tasks.objects.select_related('assigned_to', 'assigned_by').filter(
-        assigned_to__username=username,
-        status='Completed'
-    )
-
-    completed_tasks = []
-    for task in completed_tasks_qs:
-        completed_tasks.append({
-            'id': task.id,
-            'title': task.title,
-            'assigned_by': task.assigned_by.username if task.assigned_by else None,
-            'priority': task.priority,
-            'status': task.status,
-            'description': task.description,
-        })
-
-    return render(request, 'CompletedTasks.html', {'completed_tasks': completed_tasks})
+    user = get_object_or_404(Users, username=username)
+    
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        new_username = request.POST.get('username')
+        
+        if not email or not new_username:
+            messages.error(request, 'Username and Email are required.')
+            return render(request, 'Profile.html', {'user': user})
+            
+        # Check if the new username or email exists for another user
+        if new_username != username and Users.objects.filter(username=new_username).exists():
+            messages.error(request, 'Username already taken.')
+            return render(request, 'Profile.html', {'user': user})
+            
+        if email != user.email and Users.objects.filter(email=email).exists():
+            messages.error(request, 'Email already taken.')
+            return render(request, 'Profile.html', {'user': user})
+            
+        user.username = new_username
+        user.email = email
+        user.save()
+        
+        # Update session if username changed
+        if new_username != username:
+            request.session['username'] = new_username
+            
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('profile')
+        
+    return render(request, 'Profile.html', {'user': user})
+    
+def completed_tasks(request):
+    return render(request, 'CompletedTasks.html')
 
 def logout_view(request):
 

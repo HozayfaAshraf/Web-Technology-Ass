@@ -88,36 +88,40 @@
             return cookieValue;
         }
 
+        let allTasks = [];
+
+        function renderTasks(tasks) {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+            tasks.forEach(function (task) {
+                const row = `
+                    <tr>
+                        <td>${task.id}</td>
+                        <td>${task.title}</td>
+                        <td class="priority-${task.priority.toLowerCase()}">${task.priority}</td>
+                        <td>${task.assigned_by}</td>
+                        <td>${task.status}</td>
+                        <td>${task.description}</td>
+                        <td class="actions-data">
+                            <a href="/view-task/${task.id}/" class="btn btn-view btn-primary" data-id="${task.id}">View</a>
+                            <a href="#" class="btn btn-complete" data-id="${task.id}">Complete</a>
+                        </td>
+                    </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
         fetch('/api/teacher-tasks/')
             .then(response => response.json())
             .then(data => {
-                const tbody = document.querySelector('tbody');
-                tbody.innerHTML = '';
-
-                data.tasks.forEach(function (task) {
-                    if (task.status !== 'Completed') {
-                        const row = `
-                            <tr>
-                                <td>${task.id}</td>
-                                <td>${task.title}</td>
-                                <td class="priority-${task.priority.toLowerCase()}">${task.priority}</td>
-                                <td>${task.assigned_by}</td>
-                                <td>${task.status}</td>
-                                <td>${task.description}</td>
-                                <td class="actions-data">
-                                    <a href="/view-task/${task.id}/" class="btn btn-view btn-primary" data-id="${task.id}">View</a>
-                                    <a href="#" class="btn btn-complete" data-id="${task.id}">Complete</a>
-                                </td>
-                            </tr>`;
-                        tbody.innerHTML += row;
-                    }
-                });
+                allTasks = data.tasks.filter(task => task.status !== 'Completed');
+                renderTasks(allTasks);
             });
 
         document.querySelector('tbody').addEventListener('click', function (e) {
             if (!e.target.classList.contains('btn-complete')) {
                 return;
-            }
+            } 
 
             e.preventDefault();
             const taskId = e.target.getAttribute('data-id');
@@ -132,12 +136,32 @@
                 .then(data => {
                     if (data.success) {
                         e.target.closest('tr').remove();
+                        // Also remove from allTasks so it doesn't reappear on search
+                        allTasks = allTasks.filter(t => t.id.toString() !== taskId);
                     }
                 });
         });
 
         document.querySelector('form').addEventListener('submit', function (e) {
             e.preventDefault();
+            
+            const searchTerm = document.querySelector('input[name="search"]').value.toLowerCase();
+            const sortBy = document.getElementById('sort').value;
+
+            let filteredTasks = allTasks.filter(task => {
+                return task.title.toLowerCase().includes(searchTerm) || 
+                       task.description.toLowerCase().includes(searchTerm) ||
+                       (task.assigned_by && task.assigned_by.toLowerCase().includes(searchTerm));
+            });
+
+            if (sortBy === 'priority') {
+                const priorityOrder = { 'high': 1, 'medium': 2, 'low': 3 };
+                filteredTasks.sort((a, b) => priorityOrder[a.priority.toLowerCase()] - priorityOrder[b.priority.toLowerCase()]);
+            } else if (sortBy === 'status') {
+                filteredTasks.sort((a, b) => a.status.localeCompare(b.status));
+            }
+
+            renderTasks(filteredTasks);
         });
 
     </script>

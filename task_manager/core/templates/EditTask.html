@@ -28,25 +28,37 @@
         <section class="form-container">
             <h2>Edit Task Details</h2>
 
-            <form action="AdminDashboard.html" method="GET">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
                 <fieldset>
                     <legend>Modify Task</legend>
 
                     <div>
                         <label for="taskId">Task ID:</label><br>
-                        <input type="number" id="taskId" name="taskId" readonly>
+                        <input type="number" id="taskId" name="taskId" value="{{ task.id }}" readonly>
                     </div>
                     <br>
 
                     <div>
                         <label for="taskTitle">Task Title:</label><br>
-                        <input type="text" id="taskTitle" name="taskTitle" required>
+                        <input type="text" id="taskTitle" name="taskTitle" value="{{ task.title }}" required>
                     </div>
                     <br>
 
                     <div>
                         <label for="teacherName">Assigned Teacher:</label><br>
                         <select id="teacherName" name="teacherName" required>
+                            {% for teacher in teachers %}
+                                <option value="{{ teacher.username }}" {% if task.assigned_to.username == teacher.username %}selected{% endif %}>{{ teacher.username }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <br>
@@ -54,16 +66,16 @@
                     <div>
                         <label for="priority">Priority Level:</label><br>
                         <select id="priority" name="priority" required>
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high" selected>High</option>
+                            <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Low</option>
+                            <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Medium</option>
+                            <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
                         </select>
                     </div>
                     <br>
 
                     <div>
                         <label for="description">Task Description:</label><br>
-                        <textarea id="description" name="description" rows="5" cols="40" required></textarea>
+                        <textarea id="description" name="description" rows="5" cols="40" required>{{ task.description }}</textarea>
                     </div>
 
                     <br>
@@ -85,70 +97,6 @@
     <footer>
         <p class="copyrights"><small>&copy; 2026 School Task Portal. All rights reserved.</small></p>
     </footer>
-
-    <script>
-
-        if (!sessionStorage.getItem("username")) {
-            window.location.href = "{% url 'login' %}";
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            //load teacher to the drop down menu
-            let users = JSON.parse(localStorage.getItem("users")) || [];
-            let select = document.getElementById("teacherName");
-
-            users.forEach(function (user) {
-                if (user.role === "teacher") {
-                    let option = document.createElement("option");
-                    option.value = user.username;
-                    option.textContent = user.username;
-                    select.appendChild(option);
-                }
-            });
-
-            let taskId = localStorage.getItem("editTaskId");
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            let task = tasks.find(function (t) {
-                return String(t.id) === String(taskId);
-            });
-
-            if (task) {
-
-                document.getElementById("taskId").value = task.id;
-                document.getElementById("taskTitle").value = task.title;
-                document.getElementById("teacherName").value = task.teacher;
-                document.getElementById("priority").value = task.priority;
-                document.getElementById("description").value = task.description;
-
-            }
-
-        });
-
-        document.querySelector('form').addEventListener('submit', function (e) {
-
-            e.preventDefault(); //Prevent form from submitting
-
-            let taskId = localStorage.getItem("editTaskId");
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks = tasks.map(function (task) {
-                if (String(task.id) === String(taskId)) {
-                    task.title = document.getElementById("taskTitle").value;
-                    task.teacher = document.getElementById("teacherName").value;
-                    task.priority = document.getElementById("priority").value;
-                    task.description = document.getElementById("description").value;
-                }
-                return task;
-            });
-
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            localStorage.removeItem("editTaskId");
-            window.location.href = "AdminDashboard.html";
-
-        });
-
-
-    </script>
 
 </body>
 
